@@ -1,0 +1,161 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(QuotesApp());
+}
+
+class QuotesApp extends StatelessWidget {
+  const QuotesApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<String> quotes = [
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "Believe you can and you're halfway there.",
+    "Do what you can, with what you have, where you are.",
+    "Your time is limited, so don't waste it living someone else's life.",
+    "Hardships often prepare ordinary people for an extraordinary destiny.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "Act as if what you do makes a difference. It does.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "Keep your face always toward the sunshine—and shadows will fall behind you.",
+    "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+    "It does not matter how slowly you go as long as you do not stop.",
+    "Everything you’ve ever wanted is on the other side of fear.",
+    "Opportunities don't happen, you create them.",
+    "Success is how high you bounce when you hit bottom.",
+    "Start where you are. Use what you have. Do what you can."
+  ];
+
+  List<String> favoriteQuotes = [];
+
+  void toggleFavorite(String quote) {
+    setState(() {
+      if (favoriteQuotes.contains(quote)) {
+        favoriteQuotes.remove(quote);
+      } else {
+        favoriteQuotes.add(quote);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Quotes App")),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.pink),
+              child: Text(
+                "Quotes App",
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              title: const Text("Home"),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              title: const Text("Favorites"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritePage(favorites: favoriteQuotes)),
+              ),
+            ),
+            ListTile(
+              title: const Text("About"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutPage()),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(8.0),
+        itemCount: quotes.length,
+        itemBuilder: (context, index) {
+          final quote = quotes[index];
+          return Card(
+            color: Colors.pink[50],
+            child: ListTile(
+              title: Text(quote, style: const TextStyle(fontSize: 16.0)),
+              trailing: IconButton(
+                icon: Icon(
+                  favoriteQuotes.contains(quote) ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.pink,
+                ),
+                onPressed: () => toggleFavorite(quote),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class FavoritePage extends StatelessWidget {
+  final List<String> favorites;
+
+  const FavoritePage({super.key, required this.favorites});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Favorite Quotes")),
+      body: favorites.isEmpty
+          ? const Center(child: Text("No favorite quotes yet."))
+          : ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: favorites.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  color: Colors.pink[50],
+                  child: ListTile(
+                    title: Text(favorites[index], style: const TextStyle(fontSize: 16.0)),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}
+
+class AboutPage extends StatelessWidget {
+  const AboutPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("About")),
+      body: const Center(
+        child: Text(
+          "App Developed By: Anchal Pandey",
+          style: TextStyle(fontSize: 18.0),
+        ),
+      ),
+    );
+  }
+}
